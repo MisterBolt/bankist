@@ -57,7 +57,21 @@ const inputLoanAmount = document.querySelector(".form__input--loan-amount");
 const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
+////////////////////---------- STARTING CONDITIONS ----------\\\\\\\\\\\\\\\\\\\\
+createUsernames(accounts);
+displayMovements(account1.movements);
+
 ////////////////////---------- APP FUNCTIONALITY ----------\\\\\\\\\\\\\\\\\\\\
+function createUsernames(accounts) {
+  accounts.forEach(acc => {
+    acc.username = acc.owner
+      .toLowerCase()
+      .split(" ")
+      .map(word => word[0])
+      .join("");
+  });
+}
+
 function displayMovements(movements) {
   containerMovements.innerHTML = "";
 
@@ -74,5 +88,3 @@ function displayMovements(movements) {
     containerMovements.insertAdjacentHTML("afterbegin", html);
   });
 }
-
-displayMovements(account1.movements);
