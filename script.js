@@ -74,7 +74,7 @@ btnLogin.addEventListener("click", function (e) {
     inputLoginUsername.blur();
     inputLoginPin.blur();
     updateUI();
-  }
+  } else alert("Wrong credentials");
 });
 
 btnTransfer.addEventListener("click", function (e) {
@@ -95,7 +95,7 @@ btnTransfer.addEventListener("click", function (e) {
     currentAccount.movements.push(-amount);
     recipientAccount.movements.push(amount);
     updateUI();
-  }
+  } else alert("Wrong recepient or too low account balance");
 });
 
 btnLoan.addEventListener("click", function (e) {
@@ -107,7 +107,20 @@ btnLoan.addEventListener("click", function (e) {
   if (amount > 0 && currentAccount.movements.some(movement => movement >= amount * 0.1)) {
     currentAccount.movements.push(amount);
     updateUI();
-  } else alert("You have too low account balance");
+  } else alert("Too high loan");
+});
+
+btnClose.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  if (inputCloseUsername.value === currentAccount.username && Number(inputClosePin.value) === currentAccount.pin) {
+    const index = accounts.findIndex(account => account.username === currentAccount.username);
+
+    accounts.splice(index, 1);
+    containerApp.style.opacity = 0;
+  } else alert("Wrong credentials");
+
+  inputCloseUsername.value = inputClosePin.value = "";
 });
 
 ////////////////////---------- APP FUNCTIONALITY ----------\\\\\\\\\\\\\\\\\\\\
