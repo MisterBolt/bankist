@@ -98,6 +98,18 @@ btnTransfer.addEventListener("click", function (e) {
   }
 });
 
+btnLoan.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  const amount = Number(inputLoanAmount.value);
+  inputLoanAmount.value = "";
+
+  if (amount > 0 && currentAccount.movements.some(movement => movement >= amount * 0.1)) {
+    currentAccount.movements.push(amount);
+    updateUI();
+  } else alert("You have too low account balance");
+});
+
 ////////////////////---------- APP FUNCTIONALITY ----------\\\\\\\\\\\\\\\\\\\\
 function createUsernames(accounts) {
   accounts.forEach(acc => {
