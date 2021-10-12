@@ -60,6 +60,7 @@ const inputClosePin = document.querySelector(".form__input--pin");
 ////////////////////---------- STARTING CONDITIONS ----------\\\\\\\\\\\\\\\\\\\\
 createUsernames(accounts);
 let currentAccount;
+let sorted = false;
 
 ////////////////////---------- BUTTONS FUNCTIONALITY ----------\\\\\\\\\\\\\\\\\\\\
 btnLogin.addEventListener("click", function (e) {
@@ -123,6 +124,11 @@ btnClose.addEventListener("click", function (e) {
   inputCloseUsername.value = inputClosePin.value = "";
 });
 
+btnSort.addEventListener("click", function () {
+  sorted = !sorted;
+  displayMovements();
+});
+
 ////////////////////---------- APP FUNCTIONALITY ----------\\\\\\\\\\\\\\\\\\\\
 function createUsernames(accounts) {
   accounts.forEach(acc => {
@@ -136,8 +142,9 @@ function createUsernames(accounts) {
 
 function displayMovements() {
   containerMovements.innerHTML = "";
+  const movements = sorted ? currentAccount.movements.slice().sort((a, b) => a - b) : currentAccount.movements;
 
-  currentAccount.movements.forEach(function (movement, i) {
+  movements.forEach(function (movement, i) {
     const type = movement > 0 ? "deposit" : "withdrawal";
 
     const html = `
