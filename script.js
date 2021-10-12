@@ -2,7 +2,7 @@
 
 ////////////////////---------- DATA ----------\\\\\\\\\\\\\\\\\\\\
 const account1 = {
-  owner: "Jonas Schmedtmann",
+  owner: "Karol Bielecki",
   movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
   interestRate: 1.2, // %
   pin: 1111,
@@ -59,9 +59,23 @@ const inputClosePin = document.querySelector(".form__input--pin");
 
 ////////////////////---------- STARTING CONDITIONS ----------\\\\\\\\\\\\\\\\\\\\
 createUsernames(accounts);
-displayMovements(account1.movements);
-calculateAndDisplayBalance(account1.movements);
-calculateAndDisplaySummary(account1.movements);
+let currentAccount;
+
+////////////////////---------- BUTTONS FUNCTIONALITY ----------\\\\\\\\\\\\\\\\\\\\
+btnLogin.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  currentAccount = accounts.find(account => account.username === inputLoginUsername.value);
+
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(" ")[0]}!`;
+    containerApp.style.opacity = 100;
+    inputLoginUsername.value = inputLoginPin.value = "";
+    inputLoginUsername.blur();
+    inputLoginPin.blur();
+    updateUI();
+  }
+});
 
 ////////////////////---------- APP FUNCTIONALITY ----------\\\\\\\\\\\\\\\\\\\\
 function createUsernames(accounts) {
@@ -74,16 +88,16 @@ function createUsernames(accounts) {
   });
 }
 
-function displayMovements(movements) {
+function displayMovements() {
   containerMovements.innerHTML = "";
 
-  movements.forEach(function (movement, i) {
+  currentAccount.movements.forEach(function (movement, i) {
     const type = movement > 0 ? "deposit" : "withdrawal";
 
     const html = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-        <div class="movements__value">${movement}</div>
+        <div class="movements__value">${movement}€</div>
       </div>
     `;
 
@@ -91,20 +105,37 @@ function displayMovements(movements) {
   });
 }
 
-function calculateAndDisplayBalance(movements) {
-  const balance = movements.reduce((acc, movement) => acc + movement, 0);
-  labelBalance.textContent = balance;
+function calculateAndDisplayBalance() {
+  currentAccount.balance = currentAccount.movements.reduce((acc, movement) => acc + movement, 0);
+  labelBalance.textContent = `${currentAccount.balance}€`;
 }
 
-function calculateAndDisplaySummary(movements) {
-  const incomes = movements.filter(movement => movement > 0).reduce((sum, movement) => sum + movement, 0);
-  const outcomes = movements.filter(movement => movement < 0).reduce((sum, movement) => sum + movement, 0);
-  const interest = movements
+function calculateAndDisplayIncomes() {
+  const incomes = currentAccount.movements
     .filter(movement => movement > 0)
-    .map(deposit => (deposit * 1.2) / 100)
-    .reduce((sum, int) => sum + int, 0);
+    .reduce((sum, movement) => sum + movement, 0);
+  labelSumIn.textContent = `${incomes}€`;
+}
 
-  labelSumIn.textContent = incomes;
-  labelSumOut.textContent = outcomes;
-  labelSumInterest.textContent = interest;
+function calculateAndDisplayOutcomes() {
+  const outcomes = currentAccount.movements
+    .filter(movement => movement < 0)
+    .reduce((sum, movement) => sum + movement, 0);
+  labelSumOut.textContent = `${Math.abs(outcomes)}€`;
+}
+
+function calculateAndDisplayInterest() {
+  const interest = currentAccount.movements
+    .filter(movement => movement > 0)
+    .map(income => (income * currentAccount.interestRate) / 100)
+    .reduce((sum, int) => sum + int, 0);
+  labelSumInterest.textContent = `${interest}€`;
+}
+
+function updateUI() {
+  displayMovements();
+  calculateAndDisplayBalance();
+  calculateAndDisplayIncomes();
+  calculateAndDisplayOutcomes();
+  calculateAndDisplayInterest();
 }
