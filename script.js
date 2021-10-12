@@ -77,6 +77,27 @@ btnLogin.addEventListener("click", function (e) {
   }
 });
 
+btnTransfer.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  const recipientAccount = accounts.find(account => account.username === inputTransferTo.value);
+  const amount = Number(inputTransferAmount.value);
+  inputTransferTo.value = inputTransferAmount.value = "";
+  inputTransferTo.blur();
+  inputTransferAmount.blur();
+
+  if (
+    recipientAccount &&
+    amount > 0 &&
+    currentAccount.balance >= amount &&
+    recipientAccount?.username != currentAccount.username
+  ) {
+    currentAccount.movements.push(-amount);
+    recipientAccount.movements.push(amount);
+    updateUI();
+  }
+});
+
 ////////////////////---------- APP FUNCTIONALITY ----------\\\\\\\\\\\\\\\\\\\\
 function createUsernames(accounts) {
   accounts.forEach(acc => {
