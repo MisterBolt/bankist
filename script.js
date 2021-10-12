@@ -60,6 +60,8 @@ const inputClosePin = document.querySelector(".form__input--pin");
 ////////////////////---------- STARTING CONDITIONS ----------\\\\\\\\\\\\\\\\\\\\
 createUsernames(accounts);
 displayMovements(account1.movements);
+calculateAndDisplayBalance(account1.movements);
+calculateAndDisplaySummary(account1.movements);
 
 ////////////////////---------- APP FUNCTIONALITY ----------\\\\\\\\\\\\\\\\\\\\
 function createUsernames(accounts) {
@@ -87,4 +89,22 @@ function displayMovements(movements) {
 
     containerMovements.insertAdjacentHTML("afterbegin", html);
   });
+}
+
+function calculateAndDisplayBalance(movements) {
+  const balance = movements.reduce((acc, movement) => acc + movement, 0);
+  labelBalance.textContent = balance;
+}
+
+function calculateAndDisplaySummary(movements) {
+  const incomes = movements.filter(movement => movement > 0).reduce((sum, movement) => sum + movement, 0);
+  const outcomes = movements.filter(movement => movement < 0).reduce((sum, movement) => sum + movement, 0);
+  const interest = movements
+    .filter(movement => movement > 0)
+    .map(deposit => (deposit * 1.2) / 100)
+    .reduce((sum, int) => sum + int, 0);
+
+  labelSumIn.textContent = incomes;
+  labelSumOut.textContent = outcomes;
+  labelSumInterest.textContent = interest;
 }
