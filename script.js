@@ -102,6 +102,7 @@ const inputClosePin = document.querySelector(".form__input--pin");
 createUsernames(accounts);
 let currentAccount;
 let sorted = false;
+let logOutTimer;
 
 ////////////////////---------- BUTTONS FUNCTIONALITY ----------\\\\\\\\\\\\\\\\\\\\
 btnLogin.addEventListener("click", function (e) {
@@ -116,6 +117,11 @@ btnLogin.addEventListener("click", function (e) {
     inputLoginUsername.blur();
     inputLoginPin.blur();
     updateUI();
+
+    if (logOutTimer) {
+      clearInterval(logOutTimer);
+    }
+    logOutTimer = startLogOutTimer();
   } else alert("Wrong credentials");
 });
 
@@ -127,6 +133,9 @@ btnTransfer.addEventListener("click", function (e) {
   inputTransferTo.value = inputTransferAmount.value = "";
   inputTransferTo.blur();
   inputTransferAmount.blur();
+
+  clearInterval(logOutTimer);
+  logOutTimer = startLogOutTimer();
 
   if (
     recipientAccount &&
@@ -149,9 +158,16 @@ btnLoan.addEventListener("click", function (e) {
   const amount = Math.floor(inputLoanAmount.value);
   inputLoanAmount.value = "";
 
+  clearInterval(logOutTimer);
+  logOutTimer = startLogOutTimer();
+
   if (amount > 0 && currentAccount.movements.some(movement => movement.amount >= amount * 0.1)) {
     currentAccount.movements.push({ amount: amount, date: new Date().toISOString() });
-    updateUI();
+
+    setTimeout(function () {
+      updateUI();
+      alert(`You get the loan: ${formatCurrency(amount)}`);
+    }, 3000);
   } else alert("Too high loan");
 });
 
@@ -171,6 +187,9 @@ btnClose.addEventListener("click", function (e) {
 btnSort.addEventListener("click", function () {
   sorted = !sorted;
   displayMovements();
+
+  clearInterval(logOutTimer);
+  logOutTimer = startLogOutTimer();
 });
 
 ////////////////////---------- APP FUNCTIONALITY ----------\\\\\\\\\\\\\\\\\\\\
@@ -257,6 +276,29 @@ function updateAndDisplayBalanceDate() {
 function formatCurrency(amount) {
   const options = { style: "currency", currency: currentAccount.currency };
   return Intl.NumberFormat(currentAccount.locale, options).format(amount);
+}
+
+function startLogOutTimer() {
+  function tickTock() {
+    const min = String(Math.trunc(time / 60)).padStart(2, 0);
+    const sec = String(time % 60).padStart(2, 0);
+
+    labelTimer.textContent = `${min}:${sec}`;
+
+    if (time === 0) {
+      clearInterval(logOutTimer);
+      labelWelcome.textContent = "Log in to get started";
+      containerApp.style.opacity = 0;
+    }
+
+    time--;
+  }
+
+  let time = 300;
+
+  tickTock();
+
+  return setInterval(tickTock, 1000);
 }
 
 function updateUI() {
