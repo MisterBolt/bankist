@@ -1,6 +1,7 @@
 "use strict";
 
 ////////////////////---------- DATA ----------\\\\\\\\\\\\\\\\\\\\
+
 const account1 = {
   owner: "Karol Bielecki",
   movements: [
@@ -73,6 +74,7 @@ const account4 = {
 const accounts = [account1, account2, account3, account4];
 
 ////////////////////---------- SELECTING ELEMENTS ----------\\\\\\\\\\\\\\\\\\\\
+
 const labelWelcome = document.querySelector(".welcome");
 const labelDate = document.querySelector(".date");
 const labelBalance = document.querySelector(".balance__value");
@@ -99,12 +101,14 @@ const inputCloseUsername = document.querySelector(".form__input--user");
 const inputClosePin = document.querySelector(".form__input--pin");
 
 ////////////////////---------- STARTING CONDITIONS ----------\\\\\\\\\\\\\\\\\\\\
+
 createUsernames(accounts);
 let currentAccount;
 let sorted = false;
 let logOutTimer;
 
 ////////////////////---------- BUTTONS FUNCTIONALITY ----------\\\\\\\\\\\\\\\\\\\\
+
 btnLogin.addEventListener("click", function (e) {
   e.preventDefault();
 
@@ -193,6 +197,7 @@ btnSort.addEventListener("click", function () {
 });
 
 ////////////////////---------- APP FUNCTIONALITY ----------\\\\\\\\\\\\\\\\\\\\
+
 function createUsernames(accounts) {
   accounts.forEach(acc => {
     acc.username = acc.owner
