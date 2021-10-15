@@ -106,7 +106,7 @@ const sectionsObserver = new IntersectionObserver(revealSection, { threshold: 0.
 
 allSections.forEach(section => {
   sectionsObserver.observe(section);
-  // section.classList.add("section--hidden");
+  section.classList.add("section--hidden");
 });
 
 // LAZY LOADING IMAGES
@@ -140,3 +140,63 @@ tabsContainer.addEventListener("click", function (e) {
   clicked.classList.add("operations__tab--active");
   tabsContent[clicked.dataset.tab - 1].classList.add("operations__content--active");
 });
+
+////////////////////---------- TESTIMONIALS SLIDER ----------\\\\\\\\\\\\\\\\\\\\
+sliderInit();
+
+function sliderInit() {
+  const slides = document.querySelectorAll(".slide");
+  const btnLeft = document.querySelector(".slider__btn--left");
+  const btnRight = document.querySelector(".slider__btn--right");
+  const dotsContainer = document.querySelector(".dots");
+
+  let currentSlide = 0;
+  const maxSlide = slides.length;
+
+  goToSlide();
+  createDots();
+  activateDot();
+
+  btnLeft.addEventListener("click", previousSlide);
+  btnRight.addEventListener("click", nextSlide);
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowLeft") previousSlide();
+    if (e.key === "ArrowRight") nextSlide();
+  });
+
+  dotsContainer.addEventListener("click", function (e) {
+    if (!e.target.classList.contains("dots__dot")) return;
+
+    currentSlide = Number(e.target.dataset.slide);
+    goToSlide();
+    activateDot();
+  });
+
+  function createDots() {
+    slides.forEach((_, i) => {
+      dotsContainer.insertAdjacentHTML("beforeend", `<button class="dots__dot" data-slide="${i}"></button>`);
+    });
+  }
+
+  function activateDot() {
+    document.querySelectorAll(".dots__dot").forEach(dot => dot.classList.remove("dots__dot--active"));
+    document.querySelector(`.dots__dot[data-slide="${currentSlide}"]`).classList.add("dots__dot--active");
+  }
+
+  function goToSlide() {
+    slides.forEach((slide, i) => (slide.style.transform = `translateX(${100 * (i - currentSlide)}%)`));
+  }
+
+  function previousSlide() {
+    currentSlide === 0 ? (currentSlide = maxSlide - 1) : currentSlide--;
+    goToSlide();
+    activateDot();
+  }
+
+  function nextSlide() {
+    currentSlide === maxSlide - 1 ? (currentSlide = 0) : currentSlide++;
+    goToSlide();
+    activateDot();
+  }
+}
