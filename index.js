@@ -6,6 +6,8 @@ const btnCloseModal = document.querySelector(".btn--close-modal");
 const btnsOpenModal = document.querySelectorAll(".btn--show-modal");
 const btnScrollTo = document.querySelector(".btn--scroll-to");
 const section1 = document.getElementById("section--1");
+const nav = document.querySelector(".nav");
+const header = document.querySelector("header");
 
 ////////////////////---------- MODAL WINDOW ----------\\\\\\\\\\\\\\\\\\\\
 
@@ -37,7 +39,7 @@ btnScrollTo.addEventListener("click", function (e) {
   section1.scrollIntoView({ behavior: "smooth" });
 });
 
-////////////////////---------- NAVBAR BUTTONS ----------\\\\\\\\\\\\\\\\\\\\
+////////////////////---------- NAVBAR ----------\\\\\\\\\\\\\\\\\\\\
 
 document.querySelector(".nav__links").addEventListener("click", function (e) {
   e.preventDefault();
@@ -50,3 +52,33 @@ document.querySelector(".nav__links").addEventListener("click", function (e) {
   if (sectionId === "login.html") window.location.href = sectionId;
   else document.querySelector(sectionId).scrollIntoView({ behavior: "smooth" });
 });
+
+// HOVER LINKS
+function hoverNavLinks(e) {
+  if (e.target.classList.contains("nav__link")) {
+    const links = e.target.closest(".nav").querySelectorAll(".nav__link");
+    const logo = e.target.closest(".nav").querySelector("img");
+
+    links.forEach(link => {
+      if (link !== e.target) link.style.opacity = this;
+    });
+    logo.style.opacity = this;
+  }
+}
+
+nav.addEventListener("mouseover", hoverNavLinks.bind(0.5));
+nav.addEventListener("mouseout", hoverNavLinks.bind(1));
+
+// STICKY NAV
+function stickyNav(entries) {
+  if (!entries[0].isIntersecting) nav.classList.add("sticky");
+  else nav.classList.remove("sticky");
+}
+
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${nav.getBoundingClientRect().height}px`,
+});
+
+headerObserver.observe(header);
