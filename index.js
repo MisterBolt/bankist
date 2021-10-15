@@ -12,6 +12,9 @@ const nav = document.querySelector(".nav");
 const header = document.querySelector("header");
 const allSections = document.querySelectorAll(".section");
 const imagesSection1 = document.querySelectorAll("img[data-src]");
+const tabsContainer = document.querySelector(".operations__tab-container");
+const tabs = document.querySelectorAll(".operations__tab");
+const tabsContent = document.querySelectorAll(".operations__content");
 
 ////////////////////---------- MODAL WINDOW ----------\\\\\\\\\\\\\\\\\\\\
 
@@ -103,7 +106,7 @@ const sectionsObserver = new IntersectionObserver(revealSection, { threshold: 0.
 
 allSections.forEach(section => {
   sectionsObserver.observe(section);
-  section.classList.add("section--hidden");
+  // section.classList.add("section--hidden");
 });
 
 // LAZY LOADING IMAGES
@@ -123,3 +126,17 @@ function lazyLoadImage(entries) {
 const imagesObserver = new IntersectionObserver(lazyLoadImage, { rootMargin: "200px" });
 
 imagesSection1.forEach(img => imagesObserver.observe(img));
+
+////////////////////---------- OPERATIONS TAB CONTAINER ----------\\\\\\\\\\\\\\\\\\\\
+
+tabsContainer.addEventListener("click", function (e) {
+  const clicked = e.target.closest(".operations__tab");
+
+  if (!clicked) return;
+
+  tabs.forEach(tab => tab.classList.remove("operations__tab--active"));
+  tabsContent.forEach(content => content.classList.remove("operations__content--active"));
+
+  clicked.classList.add("operations__tab--active");
+  tabsContent[clicked.dataset.tab - 1].classList.add("operations__content--active");
+});
